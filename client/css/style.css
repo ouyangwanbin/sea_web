@@ -1,0 +1,9 @@
+.ui-body-d {
+    max-width: 700px;
+    margin:0 auto;
+}
+
+.ui-body-d img {
+    width: 100%;
+    height: auto;
+}
