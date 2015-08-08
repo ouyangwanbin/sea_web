@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.css" />
     <script src="http://code.jquery.com/jquery-1.7.1.js"></script>
     <script src="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.js"></script>
+    <script src="js/myscript.js"></script>
     <style>
 
     </style>
@@ -23,8 +24,18 @@
         </div>
         <!-- /header -->
         <div data-role="content">
-            <div class="ui-grid-solo">
-                <div class="ui-block-a">
+            <div class="ui-grid-solo" id="products">
+                
+                <div class="ui-block-a" >
+                    <div class="ui-body ui-body-d ui-corner-all ui-shadow">
+                        
+                        <h2 class="ui-btn-left">阿拉斯加蟹</h2>
+                        <label for="price" class="ui-btn-right">$19.00/lb</label>
+                        <input type="button" value="order" />
+                    </div>
+                </div>
+                <!--
+                <div class="ui-block-a" style="margin-top:10px;">
                     <div class="ui-body ui-body-d ui-corner-all ui-shadow">
                         <img src="images/crab.jpg" />
                         <h2 class="ui-btn-left">阿拉斯加蟹</h2>
@@ -32,6 +43,15 @@
                         <p class="ui-content" style="border-top: #dadedf 1px solid;" >In the standard header configuration, there are slots for buttons on either side of the text heading. Each button is typically an anchor element, but can be a button element as well. To save space, buttons in toolbars are set to inline styling so the button is only as wide as the text and icons it contains. Default button positioning The header plugin looks for immediate children of the header container, and automatically sets the first link in the left button slot and the second link in the right. In this example, the 'Cancel' button will appear in the left slot and 'Save' will appear in the right slot based on their sequence in the source order.</p>
                     </div>
                 </div>
+                <div class="ui-block-a" style="margin-top:10px;">
+                    <div class="ui-body ui-body-d ui-corner-all ui-shadow">
+                        <img src="images/crab.jpg" />
+                        <h2 class="ui-btn-left">阿拉斯加蟹</h2>
+                        <label for="price" class="ui-btn-right">$19.00/lb</label>
+                        <p class="ui-content" style="border-top: #dadedf 1px solid;" >In the standard header configuration, there are slots for buttons on either side of the text heading. Each button is typically an anchor element, but can be a button element as well. To save space, buttons in toolbars are set to inline styling so the button is only as wide as the text and icons it contains. Default button positioning The header plugin looks for immediate children of the header container, and automatically sets the first link in the left button slot and the second link in the right. In this example, the 'Cancel' button will appear in the left slot and 'Save' will appear in the right slot based on their sequence in the source order.</p>
+                    </div>
+                </div>
+            -->
             </div>
         </div>
         <!-- /content -->

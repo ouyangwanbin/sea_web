@@ -58,9 +58,31 @@ app.use("/", express.static('client'));
 // };
 
 
+app.get('/products', function(req, res) {
+    var result = {};
+    var products = [];
+    var product1 = {
+        "id":"p1",
+        "name": "crab",
+        "price": 19.23
+    }
+    var product2 = {
+        "id":"p2",
+        "name": "shrimp",
+        "price": 21.00
+    }
+    console.log(product2);
+    result["status"] = "success";
+    products.push(product1);
+    products.push(product2);
+
+    result["data"] = products;
+    setTimeout(function() {
+        res.json(result);
+    }, 2000);
+})
 
 /*
-
 app.get('/search-user/:user_email', function(req, res) {
     // var user_email = req.params.user_email;
     // var url = restUrl + "/search-user/" + user_email;
