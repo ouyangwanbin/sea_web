@@ -25,13 +25,18 @@
         <!-- /header -->
         <div data-role="content">
             <div class="ui-grid-solo" id="products">
-                
-                <div class="ui-block-a" >
+                <div class="ui-block-a">
                     <div class="ui-body ui-body-d ui-corner-all ui-shadow">
-                        
+                        <img src="images/crab.jpg" />
                         <h2 class="ui-btn-left">阿拉斯加蟹</h2>
                         <label for="price" class="ui-btn-right">$19.00/lb</label>
-                        <input type="button" value="order" />
+                        <div class="content">
+                            <a href="#" data-role="button" data-inline="true" data-icon="minus" data-iconpos="notext"></a>
+                            <input type="text" for="price" data-inline="true" value="0" disabled style="display:inline-block;width:15%;vertical-align:middle;" />
+                            <a href="#" data-role="button" data-inline="true" data-icon="plus" data-iconpos="notext"></a>
+                            <label>库存:500</label>
+                            <input type="button" value="放入购物车" />
+                        </div>
                     </div>
                 </div>
                 <!--
