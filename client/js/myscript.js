@@ -35,12 +35,12 @@ $(document).on('pageshow', '#home', function(e, data) {
                 return;
             }
             var products = result.data;
-            $("#products").empty();
-            for (var i = 0; i < products.length; i++) {
-                var productHtml = '<div class="ui-block-a" style="margin-top:10px;"><div class="ui-body ui-body-d ui-corner-all ui-shadow"><h2 class="ui-btn-left">' + products[i].name + '</h2><label for="price" class="ui-btn-right">$' + parseFloat(products[i].price).toFixed(2) + '/lb</label><input type="button" value="order"/></div></div>';
-                $("#products").append(productHtml);
-            }
-            $("#home").trigger("pagecreate");
+            // $("#products").empty();
+            // for (var i = 0; i < products.length; i++) {
+            //     var productHtml = '<div class="ui-block-a" style="margin-top:10px;"><div class="ui-body ui-body-d ui-corner-all ui-shadow"><h2 class="ui-btn-left">' + products[i].name + '</h2><label for="price" class="ui-btn-right">$' + parseFloat(products[i].price).toFixed(2) + '/lb</label><input type="button" value="order"/></div></div>';
+            //     $("#products").append(productHtml);
+            // }
+            // $("#home").trigger("pagecreate");
         }
     });
 });
