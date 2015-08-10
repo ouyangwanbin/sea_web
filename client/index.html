@@ -6,75 +6,172 @@
     <title>Go2Fish</title>
     <base href="client" target="_blank">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="http://code.jquery.com/jquery-1.7.1.js"></script>
     <script src="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.js"></script>
     <script src="js/myscript.js"></script>
-    <style>
-
-    </style>
 </head>
 
 <body ng-app="app">
     <div data-role="page" data-theme="b" id="home">
         <div data-role="header">
-            <h1>Go2Fish</h1>
-            <a href="#login" data-theme="b" class="ui-btn-right">Login</a>
+            <h1>产品</h1>
+            <a href="#login" data-theme="b" class="ui-btn-right" style="display:none;" id="navLoginBtn">登录</a>
+            <a href="#" data-theme="b" class="ui-btn-right" style="display:none;" id="navLogoutBtn">登出</a>
         </div>
         <!-- /header -->
         <div data-role="content">
             <div class="ui-grid-solo" id="products">
-                <div class="ui-block-a">
-                    <div class="ui-body ui-body-d ui-corner-all ui-shadow">
-                        <img src="images/crab.jpg" />
-                        <h2 class="ui-btn-left">阿拉斯加蟹</h2>
-                        <label for="price" class="ui-btn-right">$19.00/lb</label>
-                        <div class="content">
-                            <a href="#" data-role="button" data-inline="true" data-icon="minus" data-iconpos="notext"></a>
-                            <input type="text" for="price" data-inline="true" value="0" disabled style="display:inline-block;width:15%;vertical-align:middle;" />
-                            <a href="#" data-role="button" data-inline="true" data-icon="plus" data-iconpos="notext"></a>
-                            <label>库存:500</label>
-                            <input type="button" value="放入购物车" />
-                        </div>
-                    </div>
-                </div>
-                <!--
-                <div class="ui-block-a" style="margin-top:10px;">
-                    <div class="ui-body ui-body-d ui-corner-all ui-shadow">
-                        <img src="images/crab.jpg" />
-                        <h2 class="ui-btn-left">阿拉斯加蟹</h2>
-                        <label for="price" class="ui-btn-right">$19.00/lb</label>
-                        <p class="ui-content" style="border-top: #dadedf 1px solid;" >In the standard header configuration, there are slots for buttons on either side of the text heading. Each button is typically an anchor element, but can be a button element as well. To save space, buttons in toolbars are set to inline styling so the button is only as wide as the text and icons it contains. Default button positioning The header plugin looks for immediate children of the header container, and automatically sets the first link in the left button slot and the second link in the right. In this example, the 'Cancel' button will appear in the left slot and 'Save' will appear in the right slot based on their sequence in the source order.</p>
-                    </div>
-                </div>
-                <div class="ui-block-a" style="margin-top:10px;">
-                    <div class="ui-body ui-body-d ui-corner-all ui-shadow">
-                        <img src="images/crab.jpg" />
-                        <h2 class="ui-btn-left">阿拉斯加蟹</h2>
-                        <label for="price" class="ui-btn-right">$19.00/lb</label>
-                        <p class="ui-content" style="border-top: #dadedf 1px solid;" >In the standard header configuration, there are slots for buttons on either side of the text heading. Each button is typically an anchor element, but can be a button element as well. To save space, buttons in toolbars are set to inline styling so the button is only as wide as the text and icons it contains. Default button positioning The header plugin looks for immediate children of the header container, and automatically sets the first link in the left button slot and the second link in the right. In this example, the 'Cancel' button will appear in the left slot and 'Save' will appear in the right slot based on their sequence in the source order.</p>
-                    </div>
-                </div>
-            -->
+                <!-- products list -->
             </div>
         </div>
         <!-- /content -->
-        <footer data-role="footer" data-position="fixed">
+        <footer data-role="footer" data-position="fixed" style="display:none;" id="gfooter">
             <nav data-role="navbar">
                 <ul>
-                    <li><a href="home" data-icon="home">Home</a></li>
-                    <li><a href="Photos" data-icon="grid">Photos</a></li>
-                    <li><a href="User" data-icon="video">User</a></li>
+                    <li><a href="#home" data-icon="home" id="history">历史记录</a></li>
+                    <li><a href="#shopcart" data-icon="grid" data-inline="true">购物车<label id="shopcartNum" style="display:none;">(0)</label></a></li>
+                    <li><a href="#User" data-icon="video">用户设置</a></li>
                 </ul>
             </nav>
         </footer>
         <!-- /footer -->
     </div>
     <!-- /page -->
-</body>
-
-</html>
+    <!-- login -->
+    <div data-role="page" data-theme="b" id="login">
+        <div data-role="header">
+            <a href="#home" data-theme="b">首页</a>
+            <h1>登录</h1>
+        </div>
+        <div data-role="content">
+            <div class="ui-grid-solo">
+                <div class="ui-body ui-body-d ui-corner-all ui-shadow" style="height:100%">
+                    <form method="post" action="demoform.asp">
+                        <label for="emai">邮箱:</label>
+                        <input type="text" name="lemail" id="lemail" placeholder="请输入邮箱">
+                        <label for="password">密码:</label>
+                        <input type="password" name="lpassword" id="lpassword" placeholder="请输入密码">
+                        <input type="button" value="登录" data-theme="b" data-inline="true" id="loginBtn">
+                        <label>没有注册?请<a href="#register">注册</a></label>
+                        <label style="margin-left:20px;"><a href="#forget" data-rel="dialog">忘记密码?</a></label>
+                        <p id="loginMsg" style="color:red;"></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /login -->
+    <!-- register -->
+    <div data-role="page" data-theme="b" id="register">
+        <div data-role="header">
+            <a href="#home" data-theme="b">首页</a>
+            <h1>注册</h1>
+            <a href="#login" data-theme="b">登录</a>
+        </div>
+        <div data-role="content">
+            <div class="ui-grid-solo">
+                <div class="ui-body ui-body-d ui-corner-all ui-shadow" style="height:100%">
+                    <form method="post">
+                        <label for="emai">邮箱:</label>
+                        <input type="text" name="remail" id="remail" placeholder="请输入邮箱">
+                        <label for="password">密码:</label>
+                        <input type="password" name="rpassword" id="rpassword" placeholder="请输入密码">
+                        <label for="password">确认密码:</label>
+                        <input type="password" name="rerpassword" id="rerpassword" placeholder="请再次输入密码">
+                        <label for="flip-checkbox-1">是否接受产品发布信息</label>
+                        <label>
+                            <input type="checkbox" name="checkbox-0 " id="isReceive">Check me
+                        </label>
+                        <input type="button" id="registerBtn" value="注册" data-theme="b" data-inline="true">
+                    </form>
+                    <p id="registerMsg" style="color:red;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /register -->
+    <!-- forget password -->
+    <div data-role="page" data-theme="b" id="forget">
+        <div data-role="header">
+            <h1>忘记密码</h1>
+        </div>
+        <div data-role="content">
+            <div class="ui-grid-solo">
+                <div class="ui-body ui-body-d ui-corner-all ui-shadow" style="height:100%">
+                    <form method="post">
+                        <label for="emai">邮箱:</label>
+                        <input type="text" name="remail" id="remail" placeholder="请输入邮箱">
+                        <input type="button" value="Submit" data-theme="b" data-icon="check" data-iconpos="right" data-inline="true">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /forget password -->
+    <!-- shopcart -->
+    <div data-role="page" data-theme="b" id="shopcart">
+        <div data-role="header">
+            <a href="#home" data-theme="b">首页</a>
+            <h1>购物车</h1>
+        </div>
+        <div data-role="content">
+            <table data-role="table" data-mode="columntoggle" class="ui-responsive ui-shadow ui-corner-all ui-overlay-shadow" id="myTable" style="width:100%;max-width:700px;text-align:center;background-color:#f3f3f3" id="shopcartTable">
+                <thead>
+                    <tr>
+                        <th>产品</th>
+                        <th>单价</th>
+                        <th>数量</th>
+                        <th>小计</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div data-role="content">
+                <p>总计:$
+                    <label id="shopcartTotal">0.00</label>
+                </p>
+                <div class="ui-field-contain">
+                    <p>请选择取货地址:</p>
+                    <select name="select-native-1" id="places">
+                    </select>
+                    <p>备注:</p>
+                    <textarea name="textarea" id="order_notes">
+                        
+                    </textarea>
+                </div>
+                <input type="button" value="结算" class="ui-shadow ui-btn-right ui-mini" id="shopcartBtn" />
+                <div data-role="content" style="display:none;" id="payment">
+                    <form id="checkoutForm" method="post">
+                        <label for="cardnum">卡号:</label>
+                        <input id="cardNumber" data-braintree-name="number" value="4005519200000004">
+                        <label for="expireDate">过期日期:</label>
+                        <input id="cardExpiration" data-braintree-name="expiration_date" placeholder="MM/YY">
+                        <label for="cvv">CVV:</label>
+                        <input id="cardCvv" data-braintree-name="cvv" value="100">
+                        <input type="button" class="ui-shadow ui-btn-right ui-mini" id="pay" value="付款">
+                    </form>
+                    <p id="payMsg" style="color:red"></p>
+                </div>
+                <p id="paySuccessMsg" style="color:green;font-size:16px;"></p>
+            </div>
+        </div>
+        <!-- /content -->
+        <footer data-role="footer" data-position="fixed" style="display:none;" id="gfooter">
+            <nav data-role="navbar">
+                <ul>
+                    <li><a href="#home" data-icon="home" id="history">历史记录</a></li>
+                    <li><a href="#shopcart" data-icon="grid" data-inline="true">购物车<label id="shopcartNum" style="display:none;">(0)</label></a></li>
+                    <li><a href="#User" data-icon="video">用户设置</a></li>
+                </ul>
+            </nav>
+        </footer>
+        <!-- /footer -->
+    </div>
+    <!-- /shopcart -->
+    <script src="https://js.braintreegateway.com/v2/braintree.js"></script>
 </body>
 
 </html>
