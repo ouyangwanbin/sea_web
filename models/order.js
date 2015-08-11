@@ -10,9 +10,12 @@ var OrderSchema = new Schema({
         type: String,
         required: true
     },
+    product_name:{
+        type:String,
+        required:true
+    },
     place_id: {
-        type: String,
-        required: true
+        type: String
     },
     order_date: {
         type: Date,

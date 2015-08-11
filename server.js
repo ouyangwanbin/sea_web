@@ -98,66 +98,37 @@ app.post("/payment", requireLogin, function(req, res, next) {
         }
         //update databases for orders and products
         Order.find({
-            user_id:req.session.user._id,
-            order_status:"ordered"
-        },function(err,orders){
-            if(err){
+            user_id: req.session.user._id,
+            order_status: "ordered"
+        }, function(err, orders) {
+            if (err) {
                 res.status = 500;
                 return next(err);
             }
-            
-        })
-        // function asyncLoop(i, callback) {
-        //     if (i < req.shopcart.orders.length) {
-        //         var cartorder = req.shopcart.orders[i];
-        //         Product.findOne({
-        //             _id: cartorder.product_id
-        //         }, function(err, product) {
-        //             console.log(product);
-        //             if (err) {
-        //                 res.status = 500;
-        //                 return next(err);
-        //             }
-        //             if (!product) {
-        //                 res.status = 404;
-        //                 return next(new Error("no product found"));
-        //             }
-        //             var order = new Order();
-        //             order.product_id = cartorder.product_id;
-        //             order.order_num = cartorder.order_num;
-        //             order.product_price = product.product_price;
-        //             order.order_notes = order_notes;
-        //             order.place_id = place_id;
-        //             order.user_id = req.session.user._id;
 
-        //             order.save(function(err) {
-        //                 if (err) {
-        //                     res.status = 500;
-        //                     return next(err);
-        //                 }
-        //                 Product.update({
-        //                     _id: cartorder.product_id
-        //                 }, {
-        //                     $inc: {
-        //                         product_quantity: -order.order_num
-        //                     }
-        //                 }, function(err) {
-        //                     if (err) {
-        //                         res.status = 500;
-        //                         return next(err);
-        //                     }
-        //                     asyncLoop(i + 1, callback);
-        //                 });
-        //             });
-
-        //         })
-        //     } else {
-        //         callback();
-        //     }
-        // }
-        // asyncLoop(0, function() {
-        //     res.send(result);
-        // });
+            function asyncLoop(i, callback) {
+                if (i < orders.length) {
+                    Order.update({
+                        _id: orders[i]._id
+                    }, {
+                        $set: {
+                            order_status: "paid"
+                        }
+                    }, function(err) {
+                        if (err) {
+                            res.status = 500;
+                            return next(err);
+                        }
+                        asyncLoop(i + 1, callback);
+                    });
+                } else {
+                    callback();
+                }
+            }
+            asyncLoop(0, function() {
+                res.send(result);
+            });
+        });
     });
 });
 
@@ -285,72 +256,85 @@ app.get('/products', function(req, res) {
         }
         if (!product) {
             res.status = 404;
-            return next(new Error("无法找到该产品"));
+            return next(new Error("无法找到商品"));
         }
-        Order.findOne({
-            user_id: req.session.user._id,
-            product_id: product_id,
-            order_status: "ordered"
-        }, function(err, order) {
+        Product.update({
+            _id: product_id
+        }, {
+            $inc: {
+                product_quantity: -order_num
+            }
+        }, function(err) {
             if (err) {
                 res.status = 500;
                 return next(err);
             }
-            if (!order) {
-                var order = new Order();
-                order.user_id = req.session.user._id;
-                order.product_id = product_id;
-                order.order_num = order_num;
-                order.product_price = product.product_price;
-                order.save(function(err) {
-                    if (err) {
-                        res.status = 500;
-                        return next(err);
-                    }
-                    Order.find({
-                        user_id: req.session.user._id,
-                        order_status: "ordered"
-                    }, function(err, orders) {
+            Order.findOne({
+                user_id: req.session.user._id,
+                product_id: product_id,
+                order_status: "ordered"
+            }, function(err, order) {
+                if (err) {
+                    res.status = 500;
+                    return next(err);
+                }
+                if (!order) {
+                    var orderNew = new Order();
+                    orderNew.user_id = req.session.user._id;
+                    orderNew.product_id = product_id;
+                    orderNew.order_num = order_num;
+                    orderNew.product_price = product.product_price;
+                    orderNew.product_name = product.product_name;
+                    orderNew.save(function(err) {
                         if (err) {
                             res.status = 500;
                             return next(err);
                         }
-                        res.json({
-                            status: "success",
-                            data: orders
+                        Order.find({
+                            user_id: req.session.user._id,
+                            order_status: "ordered"
+                        }, function(err, orders) {
+                            if (err) {
+                                res.status = 500;
+                                return next(err);
+                            }
+                            res.json({
+                                status: "success",
+                                data: orders
+                            });
                         });
-                    });
-                })
-            } else {
-                //update
-                Order.update({
-                    user_id: req.session.user._id,
-                    product_id: product_id,
-                    order_status: "ordered"
-                }, {
-                    $inc: {
-                        order_num: order_num
-                    }
-                }, function(err) {
-                    if (err) {
-                        res.status = 500;
-                        return next(err);
-                    }
-                    Order.find({
+                    })
+                } else {
+                    //update
+                    Order.update({
                         user_id: req.session.user._id,
+                        product_id: product_id,
                         order_status: "ordered"
-                    }, function(err, orders) {
+                    }, {
+                        $inc: {
+                            order_num: order_num
+                        }
+                    }, function(err) {
                         if (err) {
                             res.status = 500;
                             return next(err);
                         }
-                        res.json({
-                            status: "success",
-                            data: orders
+                        Order.find({
+                            user_id: req.session.user._id,
+                            order_status: "ordered"
+                        }, function(err, orders) {
+                            if (err) {
+                                res.status = 500;
+                                return next(err);
+                            }
+                            res.json({
+                                status: "success",
+                                data: orders
+                            });
                         });
-                    });
-                })
-            }
+                    })
+                }
+            });
         });
     });
 }).get('/shopcart', requireLogin, function(req, res, next) {
@@ -360,42 +344,24 @@ app.get('/products', function(req, res) {
     result.data.orders = [];
     result.data.places = [];
 
-    function asyncLoop(i, callback) {
-        console.log(i);
-        if (i < req.shopcart.orders.length) {
-            var order = req.shopcart.orders[i];
-            Product.findOne({
-                _id: order.product_id
-            }, function(err, product) {
-                console.log(product);
-                if (err) {
-                    res.status = 500;
-                    return next(err);
-                }
-                if (!product) {
-                    res.status = 404;
-                    return next(new Error("no product found"));
-                }
-                order.product_name = product.product_name;
-                order.product_price = product.product_price;
-                result.data.orders.push(order);
-                asyncLoop(i + 1, callback);
-            })
-        } else {
-            Place.find({}, function(err, places) {
-                console.log(places);
-                result.data.places = places;
-                callback();
-            });
+    Place.find({}, function(err, places) {
+        if (err) {
+            res.status = 500;
+            return next(err);
         }
-    }
-    if (req.shopcart && req.shopcart.orders && req.shopcart.orders.length > 0) {
-        asyncLoop(0, function() {
+        result.data.places = places;
+        Order.find({
+            user_id: req.session.user._id,
+            order_status: "ordered"
+        }, function(err, orders) {
+            if (err) {
+                res.status = 500;
+                return next(err);
+            }
+            result.data.orders = orders;
             res.json(result);
-        })
-    } else {
-        res.json(result);
-    }
+        });
+    })
 }).get('/shopcartItems', requireLogin, function(req, res, next) {
     Order.find({
         order_status: "ordered"
