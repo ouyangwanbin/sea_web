@@ -50,14 +50,6 @@ app.use(session({
     ephemeral: true
 }));
 
-app.use(session({
-    cookieName: 'shopcart',
-    secret: makeid(),
-    duration: 30 * 60 * 1000,
-    activeDuration: 5 * 60 * 1000
-}));
-
-
 
 app.use("/", express.static('client'));
 
@@ -101,63 +93,71 @@ app.post("/payment", requireLogin, function(req, res, next) {
         paymentMethodNonce: nonce
     }, function(err, result) {
         if (err) {
-            res.status = "500";
+            res.status = 500;
             return next(err);
         }
         //update databases for orders and products
-        function asyncLoop(i, callback) {
-            if (i < req.shopcart.orders.length) {
-                var cartorder = req.shopcart.orders[i];
-                Product.findOne({
-                    _id: cartorder.product_id
-                }, function(err, product) {
-                    console.log(product);
-                    if (err) {
-                        res.status = "500";
-                        return next(err);
-                    }
-                    if (!product) {
-                        res.status = "404";
-                        return next(new Error("no product found"));
-                    }
-                    var order = new Order();
-                    order.product_id = cartorder.product_id;
-                    order.order_num = cartorder.order_num;
-                    order.product_price = product.product_price;
-                    order.order_notes = order_notes;
-                    order.place_id = place_id;
-                    order.user_id = req.session.user._id;
-
-                    order.save(function(err) {
-                        if (err) {
-                            res.status = "500";
-                            return next(err);
-                        }
-                        Product.update({
-                            _id: cartorder.product_id
-                        }, {
-                            $inc: {
-                                product_quantity: -order.order_num
-                            }
-                        }, function(err) {
-                            if (err) {
-                                res.status = "500";
-                                return next(err);
-                            }
-                            asyncLoop(i + 1, callback);
-                        });
-                    });
-
-                })
-            } else {
-                callback();
+        Order.find({
+            user_id:req.session.user._id,
+            order_status:"ordered"
+        },function(err,orders){
+            if(err){
+                res.status = 500;
+                return next(err);
             }
-        }
-        asyncLoop(0, function() {
-            //empty the shopcart session
-            req.shopcart.reset();
-            res.send(result);
-        });
+            
+        })
+        // function asyncLoop(i, callback) {
+        //     if (i < req.shopcart.orders.length) {
+        //         var cartorder = req.shopcart.orders[i];
+        //         Product.findOne({
+        //             _id: cartorder.product_id
+        //         }, function(err, product) {
+        //             console.log(product);
+        //             if (err) {
+        //                 res.status = 500;
+        //                 return next(err);
+        //             }
+        //             if (!product) {
+        //                 res.status = 404;
+        //                 return next(new Error("no product found"));
+        //             }
+        //             var order = new Order();
+        //             order.product_id = cartorder.product_id;
+        //             order.order_num = cartorder.order_num;
+        //             order.product_price = product.product_price;
+        //             order.order_notes = order_notes;
+        //             order.place_id = place_id;
+        //             order.user_id = req.session.user._id;
+
+        //             order.save(function(err) {
+        //                 if (err) {
+        //                     res.status = 500;
+        //                     return next(err);
+        //                 }
+        //                 Product.update({
+        //                     _id: cartorder.product_id
+        //                 }, {
+        //                     $inc: {
+        //                         product_quantity: -order.order_num
+        //                     }
+        //                 }, function(err) {
+        //                     if (err) {
+        //                         res.status = 500;
+        //                         return next(err);
+        //                     }
+        //                     asyncLoop(i + 1, callback);
+        //                 });
+        //             });
+
+        //         })
+        //     } else {
+        //         callback();
+        //     }
+        // }
+        // asyncLoop(0, function() {
+        //     res.send(result);
+        // });
     });
 });
 
@@ -258,36 +258,101 @@ app.get('/products', function(req, res) {
         }
     })
 }).get('/logout', requireLogin, function(req, res, next) {
-    req.session.reset();
-    req.shopcart.reset();
-    res.json({
-        status: "success"
-    });
+    Order.remove({
+        user_id: req.session.user._id,
+        order_status: "ordered"
+    }, function(err) {
+        if (err) {
+            res.status = 500;
+            return next(err);
+        }
+        req.session.reset();
+        res.json({
+            status: "success"
+        });
+    })
+
+
 }).post('/shopcart', requireLogin, function(req, res, next) {
     var product_id = req.body.product_id;
     var order_num = req.body.order_num;
-    if (!req.shopcart.orders) {
-        req.shopcart.orders = [];
-    }
-    var order = {};
-    order.product_id = product_id;
-    order.order_num = Number(order_num);
-    var flag = false; //check if the product has been put in the shopcart.
-    for (var i = 0; i < req.shopcart.orders.length; i++) {
-        if (order.product_id === req.shopcart.orders[i].product_id) {
-            req.shopcart.orders[i].order_num += order.order_num;
-            flag = true;
-            break;
+    Product.findOne({
+        _id: product_id
+    }, function(err, product) {
+        if (err) {
+            res.status = 500;
+            return next(err);
         }
-    }
-    //if the product is not in the shopcart
-    if (!flag) {
-        req.shopcart.orders.push(order);
-    }
-    res.json({
-        status: "success",
-        data: req.shopcart.orders
-    })
+        if (!product) {
+            res.status = 404;
+            return next(new Error("无法找到该产品"));
+        }
+        Order.findOne({
+            user_id: req.session.user._id,
+            product_id: product_id,
+            order_status: "ordered"
+        }, function(err, order) {
+            if (err) {
+                res.status = 500;
+                return next(err);
+            }
+            if (!order) {
+                var order = new Order();
+                order.user_id = req.session.user._id;
+                order.product_id = product_id;
+                order.order_num = order_num;
+                order.product_price = product.product_price;
+                order.save(function(err) {
+                    if (err) {
+                        res.status = 500;
+                        return next(err);
+                    }
+                    Order.find({
+                        user_id: req.session.user._id,
+                        order_status: "ordered"
+                    }, function(err, orders) {
+                        if (err) {
+                            res.status = 500;
+                            return next(err);
+                        }
+                        res.json({
+                            status: "success",
+                            data: orders
+                        });
+                    });
+                })
+            } else {
+                //update
+                Order.update({
+                    user_id: req.session.user._id,
+                    product_id: product_id,
+                    order_status: "ordered"
+                }, {
+                    $inc: {
+                        order_num: order_num
+                    }
+                }, function(err) {
+                    if (err) {
+                        res.status = 500;
+                        return next(err);
+                    }
+                    Order.find({
+                        user_id: req.session.user._id,
+                        order_status: "ordered"
+                    }, function(err, orders) {
+                        if (err) {
+                            res.status = 500;
+                            return next(err);
+                        }
+                        res.json({
+                            status: "success",
+                            data: orders
+                        });
+                    });
+                })
+            }
+        });
+    });
 }).get('/shopcart', requireLogin, function(req, res, next) {
     var result = {};
     result.status = "success";
@@ -304,11 +369,11 @@ app.get('/products', function(req, res) {
             }, function(err, product) {
                 console.log(product);
                 if (err) {
-                    res.status = "500";
+                    res.status = 500;
                     return next(err);
                 }
                 if (!product) {
-                    res.status = "404";
+                    res.status = 404;
                     return next(new Error("no product found"));
                 }
                 order.product_name = product.product_name;
@@ -332,10 +397,19 @@ app.get('/products', function(req, res) {
         res.json(result);
     }
 }).get('/shopcartItems', requireLogin, function(req, res, next) {
-    res.json({
-        status: "success",
-        data: req.shopcart.orders
+    Order.find({
+        order_status: "ordered"
+    }, function(err, orders) {
+        if (err) {
+            res.status = 500;
+            return next(err);
+        }
+        res.json({
+            status: "success",
+            data: orders
+        })
     })
+
 });
 
 // error handle
