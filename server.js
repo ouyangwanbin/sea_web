@@ -364,7 +364,8 @@ app.get('/products', function(req, res) {
     })
 }).get('/shopcartItems', requireLogin, function(req, res, next) {
     Order.find({
-        order_status: "ordered"
+        order_status: "ordered",
+        user_id:req.session.user._id
     }, function(err, orders) {
         if (err) {
             res.status = 500;

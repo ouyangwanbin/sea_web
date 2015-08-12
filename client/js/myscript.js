@@ -54,10 +54,6 @@ $(document).on('pagebeforeshow', '#home', function(e, data) {
         url:'/shopcartItems',
         dataType:'json',
         success:function( result ){
-            if(result.status === "fail"){
-                jump("#login");
-                return false;
-            }
             if( result.status === "success" ){
                 var data = result.data;
                 if( data && data.length > 0 ){
@@ -249,6 +245,7 @@ $(document).on('pagecreate', '#register', function(e, data) {
 $(document).on('pagebeforeshow','#shopcart',function(e, data){
     $("#shopcartBtn").parent().show();
     $("#payment").hide();
+    $("#order_info").show();
     $("table tbody").empty();
     $("#paySuccessMsg").empty();
     $("#payMsg").empty();
@@ -303,6 +300,7 @@ $(document).on('pageshow','#shopcart',function(e, data){
                                     return false;
                                 }
                                 $("#shopcartBtn").parent().hide();
+                                $("#order_info").hide();
                                 $("#payment").show();
                                 console.log(result);
                                 if( result.status !== "success" ){
