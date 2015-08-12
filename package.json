@@ -6,6 +6,7 @@
     "body-parser": "^1.13.1",
     "braintree": "^1.27.0",
     "client-sessions": "^0.7.0",
+    "emailjs": "^0.3.16",
     "express": "3.4.8",
     "mongoose": "^4.0.6"
   },

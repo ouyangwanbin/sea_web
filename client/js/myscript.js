@@ -200,6 +200,31 @@ $(document).on('pagecreate', '#login', function(e, data) {
     });
 });
 
+$(document).on('pagebeforeshow','#forget',function(e, data){
+    $("#forgetMsg").empty();
+    $("#forgetBtn").on("click",function(){
+        if(!validateEmail($("#femail").val())){
+            $("#forgetMsg").css("color","red").text("输入邮箱格式不合法");
+            return false;
+        }
+        $.ajax({
+            type:'POST',
+            url:'/forgetPassword',
+            data:{
+                email:$.trim($("#femail").val())
+            },
+            dataType:'json',
+            success:function(result){
+                if(result.status !== "success"){
+                    $("#forgetMsg").css("color","red").text("邮件发送失败");
+                    return false;
+                }
+                $("#forgetMsg").css("color","green").text("新密码已经发送至:" + $.trim($("#femail").val()));
+            }
+        })
+    });
+});
+
 
 $(document).on('pagecreate', '#register', function(e, data) {
     $("#registerBtn").on('click', function() {

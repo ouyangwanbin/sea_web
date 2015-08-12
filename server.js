@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var app = express();
 var session = require('client-sessions');
 var mongoose = require('mongoose');
+var email = require('./node_modules/emailjs/email');
 
 var User = require('./models/user');
 var Product = require('./models/product');
@@ -23,11 +24,17 @@ var gateway = braintree.connect({
 mongoose.connect('mongodb://localhost:27017/sea');
 
 
-function makeid() {
+var mailServer = {
+    "smtp": "smtp.mail.yahoo.com",
+    "userName": "wwww@yahoo.com",
+    "password": "wwww"
+}
+
+function makeString(num) {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()|}{';/.,:?<>";
 
-    for (var i = 0; i < 27; i++)
+    for (var i = 0; i < num; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
 
     return text;
@@ -42,7 +49,7 @@ app.use(bodyParser.json());
 
 app.use(session({
     cookieName: 'session',
-    secret: makeid(),
+    secret: makeString(27),
     duration: 30 * 60 * 1000,
     activeDuration: 5 * 60 * 1000,
     httpOnly: true,
@@ -61,7 +68,6 @@ app.use(function(req, res, next) {
             if (user) {
                 req.session.user = user; //refresh the session value
             }
-            // finishing processing the middleware and run the route
             next();
         });
     } else {
@@ -365,7 +371,7 @@ app.get('/products', function(req, res) {
 }).get('/shopcartItems', requireLogin, function(req, res, next) {
     Order.find({
         order_status: "ordered",
-        user_id:req.session.user._id
+        user_id: req.session.user._id
     }, function(err, orders) {
         if (err) {
             res.status = 500;
@@ -376,6 +382,61 @@ app.get('/products', function(req, res) {
             data: orders
         })
     })
+
+}).post('/forgetPassword', function(req, res, next) {
+
+    User.findOne({
+        email: req.body.email
+    }, function(err, user) {
+        if (err) {
+            res.status = 500;
+            return next(err);
+        }
+        if (!user) {
+            res.status = 404
+            return next(new Error("用户名不存在"));
+        }
+        var newPassword = makeString(8);
+        var salt = bcrypt.genSaltSync(10);
+        var hash = bcrypt.hashSync(newPassword, salt);
+        User.update({
+            _id: user._id
+        }, {
+            $set: {
+                password: hash
+            }
+        }, function(err) {
+            if (err) {
+                res.status = 500;
+                return next(err);
+            }
+            var server = email.server.connect({
+                user: mailServer.userName,
+                password: mailServer.password,
+                host: mailServer.smtp,
+                ssl: true
+            });
+            var sendTo = req.body.email;
+            server.send({
+                text: "You new password is : " + newPassword,
+                from: mailServer.userName,
+                to: sendTo,
+                subject: "go2fish new password"
+            }, function(err, message) {
+                console.log(err || message);
+                if (err) {
+                    res.json({
+                        status: "failed"
+                    })
+                } else {
+                    res.json({
+                        status: "success"
+                    })
+                }
+            });
+        });
+
+    });
 
 });
 
