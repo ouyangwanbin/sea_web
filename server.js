@@ -75,6 +75,32 @@ app.use(function(req, res, next) {
     }
 });
 
+app.post("/confirm", requireLogin, function(req, res) {
+
+    var place_id = req.body.place_id;
+    var order_notes = req.body.order_notes;
+    console.log('place_id: ' + place_id);
+    console.log('order_notes: ' + order_notes);
+    Order.update({
+        user_id: req.session.user._id,
+        order_status: 'ordered'
+    }, {
+        $set: {
+            place_id:place_id,
+            order_notes:order_notes,
+            order_status: 'confirm'
+        }
+    }, function(err) {
+        if(err){
+            res.status = 500;
+            return next(err);
+        }
+        res.json({
+            status:"success"
+        })
+    });
+});
+
 app.get("/client_token", requireLogin, function(req, res) {
     gateway.clientToken.generate({}, function(err, response) {
         if (err) {
@@ -280,6 +306,7 @@ app.get('/products', function(req, res) {
                 product_id: product_id,
                 order_status: "ordered"
             }, function(err, order) {
+                console.log('order : ' + order);
                 if (err) {
                     res.status = 500;
                     return next(err);

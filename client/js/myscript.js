@@ -316,7 +316,24 @@ $(document).on('pageshow','#shopcart',function(e, data){
 
 
                 $("#shopcartBtn").on('click',function(){
+                    debugger;
+                    var place_id = $("#places").val();
+                    var order_notes = $("#order_notes").val();
                     $.ajax({
+                        type:'POST',
+                        url:'/confirm',
+                        dataType:'json',
+                        data:{
+                            place_id:place_id,
+                            order_notes:order_notes
+                        },
+                        success:function( result ){
+                            if(result.status === "success"){
+                                $("#paySuccessMsg").text("订货成功");
+                            }
+                        }
+                    })
+                    /*$.ajax({
                             type:'GET',
                             url:'/client_token',
                             success:function( result ){
@@ -337,7 +354,7 @@ $(document).on('pageshow','#shopcart',function(e, data){
                                     var cardExpiration = $.trim($("#cardExpiration").val());
                                     var cardCvv = $.trim($("#cardCvv").val());
                                     var place_id = $("#places").val();
-                                    var order_notes = $("#order_notes").text();
+                                    var order_notes = $("#order_notes").val();
                                     var options = {};
                                     options.number = cardNumber;
                                     options.expirationDate = cardExpiration;
@@ -373,7 +390,7 @@ $(document).on('pageshow','#shopcart',function(e, data){
                                     });
                                 });
                             }
-                        })
+                        })*/
                 });
             }
         }

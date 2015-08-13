@@ -15,7 +15,8 @@ var OrderSchema = new Schema({
         required:true
     },
     place_id: {
-        type: String
+        type: String,
+        default:""
     },
     order_date: {
         type: Date,
@@ -34,7 +35,8 @@ var OrderSchema = new Schema({
         default: "ordered"
     },
     order_notes: {
-        type: String
+        type: String,
+        default:""
     }
 });
 
