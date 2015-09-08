@@ -10,13 +10,13 @@ var OrderSchema = new Schema({
         type: String,
         required: true
     },
-    product_name:{
-        type:String,
-        required:true
+    product_name: {
+        type: String,
+        required: true
     },
     place_id: {
         type: String,
-        default:""
+        default: ""
     },
     order_date: {
         type: Date,
@@ -30,13 +30,13 @@ var OrderSchema = new Schema({
         type: Number,
         required: true
     },
-    order_status:{
+    order_status: {
         type: String,
         default: "ordered"
     },
     order_notes: {
         type: String,
-        default:""
+        default: ""
     }
 });
 

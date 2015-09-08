@@ -11,6 +11,10 @@ var UserSchema = new Schema({
         type: String,
         required: true
     },
+    credit:{
+        type:Number,
+        default:0
+    },
     id_receive_msg: {
         type: Boolean,
         default: false
