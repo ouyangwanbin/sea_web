@@ -10,15 +10,16 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="http://code.jquery.com/jquery-1.7.1.js"></script>
     <script src="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.js"></script>
+    <script src="js/jquery-dateFormat.min.js"></script>
     <script src="js/myscript.js"></script>
 </head>
 
 <body ng-app="app">
     <div data-role="page" data-theme="b" id="home">
         <div data-role="header">
-            <h1>产品</h1>
-            <a href="#login" data-theme="b" class="ui-btn-right" style="display:none;" id="navLoginBtn">登录</a>
-            <a href="#" data-theme="b" class="ui-btn-right" style="display:none;" id="navLogoutBtn">登出</a>
+            <h1>Product</h1>
+            <a href="#login" data-theme="b" class="ui-btn-right" style="display:none;" id="navLoginBtn">Login</a>
+            <a href="#" data-theme="b" class="ui-btn-right" style="display:none;" id="navLogoutBtn">Logout</a>
         </div>
         <!-- /header -->
         <div data-role="content">
@@ -30,9 +31,9 @@
         <footer data-role="footer" data-position="fixed" style="display:none;" id="gfooter">
             <nav data-role="navbar">
                 <ul>
-                    <li><a href="#home" data-icon="home" id="history">历史记录</a></li>
-                    <li><a href="#home" data-icon="home">首页</a></li>
-                    <li><a href="#shopcart" data-icon="grid" data-inline="true">购物车<label id="shopcartNum" style="display:none;">(0)</label></a></li>
+                    <li><a href="#history" data-icon="arrow-u" id="history">History</a></li>
+                    <li><a href="#home" data-icon="home">Home</a></li>
+                    <li><a href="#shopcart" data-icon="grid" data-inline="true">ShopCart<label id="shopcartNum" style="display:none;">(0)</label></a></li>
                 </ul>
             </nav>
         </footer>
@@ -42,19 +43,19 @@
     <!-- login -->
     <div data-role="page" data-theme="b" id="login">
         <div data-role="header">
-            <h1>登录</h1>
+            <h1>Login</h1>
         </div>
         <div data-role="content">
             <div class="ui-grid-solo">
                 <div class="ui-body ui-body-d ui-corner-all ui-shadow" style="height:100%">
                     <form method="post" action="demoform.asp">
-                        <label for="emai">邮箱:</label>
-                        <input type="text" name="lemail" id="lemail" placeholder="请输入邮箱">
-                        <label for="password">密码:</label>
-                        <input type="password" name="lpassword" id="lpassword" placeholder="请输入密码">
-                        <input type="button" value="登录" data-theme="b" data-inline="true" id="loginBtn">
-                        <label>没有注册?请<a href="#register">注册</a></label>
-                        <label style="margin-left:20px;"><a href="#forget" data-rel="dialog">忘记密码?</a></label>
+                        <label for="emai">Email:</label>
+                        <input type="text" name="lemail" id="lemail" placeholder="please input email">
+                        <label for="password">Password:</label>
+                        <input type="password" name="lpassword" id="lpassword" placeholder="please input password">
+                        <input type="button" value="Login" data-theme="b" data-inline="true" id="loginBtn">
+                        <label>Do not have an account?Please<a href="#register">Sign Up</a></label>
+                        <label style="margin-left:20px;"><a href="#forget" data-rel="dialog">Forget your password?</a></label>
                         <p id="loginMsg" style="color:red;"></p>
                     </form>
                 </div>
@@ -65,25 +66,25 @@
     <!-- register -->
     <div data-role="page" data-theme="b" id="register">
         <div data-role="header">
-            <a href="#home" data-theme="b">首页</a>
-            <h1>注册</h1>
-            <a href="#login" data-theme="b">登录</a>
+            <a href="#home" data-theme="b">Home</a>
+            <h1>Sign Up</h1>
+            <a href="#login" data-theme="b">Login</a>
         </div>
         <div data-role="content">
             <div class="ui-grid-solo">
                 <div class="ui-body ui-body-d ui-corner-all ui-shadow" style="height:100%">
                     <form method="post">
-                        <label for="emai">邮箱:</label>
-                        <input type="text" name="remail" id="remail" placeholder="请输入邮箱">
-                        <label for="password">密码:</label>
-                        <input type="password" name="rpassword" id="rpassword" placeholder="请输入密码">
-                        <label for="password">确认密码:</label>
-                        <input type="password" name="rerpassword" id="rerpassword" placeholder="请再次输入密码">
-                        <label for="flip-checkbox-1">是否接受产品发布信息</label>
+                        <label for="emai">Email:</label>
+                        <input type="text" name="remail" id="remail" placeholder="Please input your email">
+                        <label for="password">Password:</label>
+                        <input type="password" name="rpassword" id="rpassword" placeholder="Please input your password">
+                        <label for="password">Confirm Password:</label>
+                        <input type="password" name="rerpassword" id="rerpassword" placeholder="Please input your password again">
+                        <label for="flip-checkbox-1">Subscribe to product update </label>
                         <label>
                             <input type="checkbox" name="checkbox-0 " id="isReceive">Check me
                         </label>
-                        <input type="button" id="registerBtn" value="注册" data-theme="b" data-inline="true">
+                        <input type="button" id="registerBtn" value="Sign Up" data-theme="b" data-inline="true">
                     </form>
                     <p id="registerMsg" style="color:red;"></p>
                 </div>
@@ -94,15 +95,15 @@
     <!-- forget password -->
     <div data-role="page" data-theme="b" id="forget">
         <div data-role="header">
-            <h1>忘记密码</h1>
+            <h1>Forget Password</h1>
         </div>
         <div data-role="content">
             <div class="ui-grid-solo">
                 <div class="ui-body ui-body-d ui-corner-all ui-shadow" style="height:100%">
                     <form method="post">
-                        <label for="emai">邮箱:</label>
-                        <input type="text" name="femail" id="femail" placeholder="请输入邮箱">
-                        <input type="button" value="提交" data-theme="b"  id="forgetBtn" data-inline="true">
+                        <label for="emai">Email:</label>
+                        <input type="text" name="femail" id="femail" placeholder="Please input your email">
+                        <input type="button" value="submit" data-theme="b" id="forgetBtn" data-inline="true">
                     </form>
                     <p id="forgetMsg"></p>
                 </div>
@@ -113,43 +114,43 @@
     <!-- shopcart -->
     <div data-role="page" data-theme="b" id="shopcart">
         <div data-role="header">
-            <a href="#home" data-theme="b">首页</a>
-            <h1>购物车</h1>
+            <a href="#home" data-theme="b">Home</a>
+            <h1>ShopCart</h1>
         </div>
         <div data-role="content">
             <table data-role="table" data-mode="columntoggle" class="ui-responsive ui-shadow ui-corner-all ui-overlay-shadow" id="myTable" style="width:100%;max-width:700px;text-align:center;background-color:#f3f3f3" id="shopcartTable">
                 <thead>
                     <tr>
-                        <th>产品</th>
-                        <th>单价</th>
-                        <th>数量</th>
-                        <th>小计</th>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Sum</th>
                     </tr>
                 </thead>
                 <tbody>
                 </tbody>
             </table>
             <div data-role="content">
-                <p>总计:$
+                <p>Total:$
                     <label id="shopcartTotal">0.00</label>
                 </p>
                 <div class="ui-field-contain" id="order_info">
-                    <p>请选择取货地址:</p>
+                    <p>Please choose the place to pick up:</p>
                     <select name="select-native-1" id="places">
                     </select>
-                    <p>备注:</p>
+                    <p>Notes:</p>
                     <textarea name="textarea" id="order_notes"></textarea>
                 </div>
                 <input type="button" value="订货" class="ui-shadow ui-btn-right ui-mini" id="shopcartBtn" />
                 <div data-role="content" style="display:none;" id="payment">
                     <form id="checkoutForm" method="post">
-                        <label for="cardnum">卡号:</label>
+                        <label for="cardnum">Card Number:</label>
                         <input id="cardNumber" data-braintree-name="number" value="4005519200000004">
-                        <label for="expireDate">过期日期:</label>
+                        <label for="expireDate">Expired Date:</label>
                         <input id="cardExpiration" data-braintree-name="expiration_date" placeholder="MM/YY">
                         <label for="cvv">CVV:</label>
                         <input id="cardCvv" data-braintree-name="cvv" value="100">
-                        <input type="button" class="ui-shadow ui-btn-right ui-mini" id="pay" value="付款">
+                        <input type="button" class="ui-shadow ui-btn-right ui-mini" id="pay" value="Pay">
                     </form>
                     <p id="payMsg" style="color:red"></p>
                 </div>
@@ -157,18 +158,44 @@
             </div>
         </div>
         <!-- /content -->
-        <footer data-role="footer" data-position="fixed" style="display:none;" id="gfooter">
+<!--         <footer data-role="footer" data-position="fixed" style="display:none;" id="gfooter">
             <nav data-role="navbar">
                 <ul>
-                    <li><a href="#home" data-icon="home" id="history">历史记录</a></li>
-                    <li><a href="#shopcart" data-icon="grid" data-inline="true">购物车<label id="shopcartNum" style="display:none;">(0)</label></a></li>
-                    <li><a href="#User" data-icon="video">用户设置</a></li>
+                    <li><a href="#home" data-icon="arrow-u" id="history">History</a></li>
+                    <li><a href="#shopcart" data-icon="grid" data-inline="true">ShopCart<label id="shopcartNum" style="display:none;">(0)</label></a></li>
+                    <li><a href="#User" data-icon="video">Setting</a></li>
                 </ul>
             </nav>
-        </footer>
+        </footer> -->
         <!-- /footer -->
     </div>
     <!-- /shopcart -->
+    <!-- forget password -->
+    <div data-role="page" data-theme="b" id="history">
+        <div data-role="header">
+            <a href="#home" data-theme="b">Home</a>
+            <h1>Order History</h1>
+        </div>
+        <div data-role="content">
+            <div class="ui-grid-solo">
+                <div class="ui-body ui-body-d ui-corner-all ui-shadow" style="height:100%">
+                    <table data-role="table" data-mode="columntoggle" class="ui-responsive ui-shadow ui-corner-all ui-overlay-shadow" id="myTable" style="width:100%;max-width:700px;text-align:center;background-color:#f3f3f3" id="shopcartTable">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Order Quantity</th>
+                                <th>Order Status</th>
+                                <th>Order Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /forget password -->
     <script src="https://js.braintreegateway.com/v2/braintree.js"></script>
 </body>
 

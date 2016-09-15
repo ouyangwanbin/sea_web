@@ -110,8 +110,8 @@ $(document).on('pageshow', '#home', function(e, data) {
                                     + '<a href="#" id="'+products[i]._id+'_minus" data-role="button" data-inline="true" data-icon="minus" data-iconpos="notext"></a>' 
                                     + '<input type="text" id="'+products[i]._id+'_order_num" for="price" data-inline="true" value="1" disabled style="display:inline-block;width:15%;vertical-align:middle;" />' 
                                     + '<a href="#" id="'+products[i]._id+'_plus" data-role="button" data-inline="true" data-icon="plus" data-iconpos="notext"></a>' 
-                                    + '<label>库存:' + products[i].product_quantity + '</label>' 
-                                    + '<input type="button" value="放入购物车" id="' + products[i]._id + '"/>' 
+                                    + '<label>in stock:' + products[i].product_quantity + '</label>' 
+                                    + '<input type="button" value="add to shopcart" id="' + products[i]._id + '"/>' 
                                     + '</div>' + '</div>' + '</div>';
                 $("#products").append(productHtml);
                 $("#" + products[i]._id + "_minus").bind('click', products[i], function( event ){
@@ -204,7 +204,7 @@ $(document).on('pagebeforeshow','#forget',function(e, data){
     $("#forgetMsg").empty();
     $("#forgetBtn").on("click",function(){
         if(!validateEmail($("#femail").val())){
-            $("#forgetMsg").css("color","red").text("输入邮箱格式不合法");
+            $("#forgetMsg").css("color","red").text("invalid email format");
             return false;
         }
         $.ajax({
@@ -216,10 +216,10 @@ $(document).on('pagebeforeshow','#forget',function(e, data){
             dataType:'json',
             success:function(result){
                 if(result.status !== "success"){
-                    $("#forgetMsg").css("color","red").text("邮件发送失败");
+                    $("#forgetMsg").css("color","red").text("failed to send email");
                     return false;
                 }
-                $("#forgetMsg").css("color","green").text("新密码已经发送至:" + $.trim($("#femail").val()));
+                $("#forgetMsg").css("color","green").text("new password has been set to :" + $.trim($("#femail").val()));
             }
         })
     });
@@ -231,17 +231,17 @@ $(document).on('pagecreate', '#register', function(e, data) {
         console.log($("#isReceive").is(':checked'));
 
         if (!validateEmail($("#remail").val())) {
-            $("#registerMsg").text("邮箱格式不合法");
+            $("#registerMsg").text("invalid email format");
             return false;
         }
 
         if ($("#rpassword").val().length === 0) {
-            $("#registerMsg").text("请输入密码");
+            $("#registerMsg").text("please input your password");
             return false;
         }
 
         if ($("#rpassword").val() !== $("#rerpassword").val()) {
-            $("#registerMsg").text("密码不匹配");
+            $("#registerMsg").text("passwords do not match");
             return false;
         }
         var user = {};
@@ -316,7 +316,6 @@ $(document).on('pageshow','#shopcart',function(e, data){
 
 
                 $("#shopcartBtn").on('click',function(){
-                    debugger;
                     var place_id = $("#places").val();
                     var order_notes = $("#order_notes").val();
                     $.ajax({
@@ -329,11 +328,11 @@ $(document).on('pageshow','#shopcart',function(e, data){
                         },
                         success:function( result ){
                             if(result.status === "success"){
-                                $("#paySuccessMsg").text("订货成功");
+                                $("#paySuccessMsg").text("successfully order");
                             }
                         }
                     })
-                    /*$.ajax({
+                    $.ajax({
                             type:'GET',
                             url:'/client_token',
                             success:function( result ){
@@ -381,17 +380,44 @@ $(document).on('pageshow','#shopcart',function(e, data){
                                                 }
                                                 if(result.success === true){
                                                     $("#payment").hide();
-                                                    $("#paySuccessMsg").text("付款成功,谢谢");                                                    
+                                                    $("#paySuccessMsg").text("pay successfully, Thanks for your business");                                                    
                                                     return;
                                                 }
-                                                $("#payMsg").text("付款失败");
+                                                $("#payMsg").text("failed to pay");
                                             }
                                         })
                                     });
                                 });
                             }
-                        })*/
+                        })
                 });
+            }
+        }
+    })
+});
+
+$(document).on('pageshow','#history',function(e, data){
+    $.ajax({
+        type:'GET',
+        url:'/orders',
+        dataType:'json',
+        success:function( result ){
+            console.log(result);
+            if(result.status === "fail"){
+                jump("#login");
+                return false;
+            }
+            if(result.status === "success"){
+                var data = result.data;
+                var tbody = $("table tbody");
+                var total = 0;
+                for(var i=0; i<data.length; i++){
+                    var html = "<tr><td>"+data[i].product_name+"</td>"
+                                +"<td>"+data[i].order_num+"</td>"
+                                +"<td>"+data[i].order_status+"</td>"
+                                +"<td>"+$.format.date(data[i].order_date,"dd/MM/yyyy HH:mm:ss")+"</td></tr>";
+                    tbody.append(html);
+                }
             }
         }
     })

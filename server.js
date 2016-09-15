@@ -21,14 +21,20 @@ var gateway = braintree.connect({
     privateKey: '4bcebe8836b4ab140823ef92d06c064b'
 });
 //set up database
-mongoose.connect('mongodb://localhost:27017/sea');
+mongoose.connect('mongodb://ouyangwanbin:abc123@ds033106.mlab.com:33106/go2fish');
 
 
 var mailServer = {
     "smtp": "smtp.mail.yahoo.com",
-    "userName": "wwww@yahoo.com",
-    "password": "wwww"
+    "userName": "wanbinouyang@yahoo.com",
+    "password": "eU5eY7hP123"
 }
+
+// var mailServer = {
+//     "smtp": "smtp.gmail.com",
+//     "userName": "go2fish2016@gmail.com",
+//     "password": "abc123!@#"
+// }
 
 function makeString(num) {
     var text = "";
@@ -79,24 +85,22 @@ app.post("/confirm", requireLogin, function(req, res) {
 
     var place_id = req.body.place_id;
     var order_notes = req.body.order_notes;
-    console.log('place_id: ' + place_id);
-    console.log('order_notes: ' + order_notes);
     Order.update({
         user_id: req.session.user._id,
         order_status: 'ordered'
     }, {
         $set: {
-            place_id:place_id,
-            order_notes:order_notes,
+            place_id: place_id,
+            order_notes: order_notes,
             order_status: 'confirm'
         }
     }, function(err) {
-        if(err){
+        if (err) {
             res.status = 500;
             return next(err);
         }
         res.json({
-            status:"success"
+            status: "success"
         })
     });
 });
@@ -198,9 +202,7 @@ app.get('/products', function(req, res) {
             products: products
         }
         result["data"] = products;
-        setTimeout(function() {
-            res.json(result);
-        }, 2000);
+        res.json(result);
     })
 }).post('/register', function(req, res, next) {
     var email = req.body.email;
@@ -213,7 +215,7 @@ app.get('/products', function(req, res) {
         }
         if (count > 0) {
             res.status = 400;
-            return next(new Error("邮箱已经被注册"));
+            return next(new Error("email is in use"));
         }
         var salt = bcrypt.genSaltSync(10);
         var hash = bcrypt.hashSync(req.body.password, salt);
@@ -247,7 +249,7 @@ app.get('/products', function(req, res) {
         }
         if (!user) {
             res.status = 400;
-            return next(new Error('用户名/密码错误'))
+            return next(new Error('user name/password error'))
         } else {
             if (bcrypt.compareSync(password, user.password)) {
                 req.session.user = user;
@@ -256,9 +258,25 @@ app.get('/products', function(req, res) {
                 });
             } else {
                 res.status = 400;
-                return next(new Error('用户名/密码错误'));
+                return next(new Error('user name /password error'));
             }
         }
+    })
+}).get('/orders', requireLogin, function(req, res, next) {
+    Order.find({
+        user_id: req.session.user._id
+    }, function(err, orders) {
+        if (err) {
+            res.status = 500;
+            return next(err);
+        }
+        var result = {};
+        result.status = "success";
+        result.data = {
+            orders: orders
+        }
+        result["data"] = orders;
+        res.json(result);
     })
 }).get('/logout', requireLogin, function(req, res, next) {
     Order.remove({
@@ -288,7 +306,7 @@ app.get('/products', function(req, res) {
         }
         if (!product) {
             res.status = 404;
-            return next(new Error("无法找到商品"));
+            return next(new Error("Can not find the product"));
         }
         Product.update({
             _id: product_id
@@ -421,7 +439,7 @@ app.get('/products', function(req, res) {
         }
         if (!user) {
             res.status = 404
-            return next(new Error("用户名不存在"));
+            return next(new Error("user does not exist"));
         }
         var newPassword = makeString(8);
         var salt = bcrypt.genSaltSync(10);
