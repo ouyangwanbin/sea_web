@@ -1,4 +1,4 @@
-var serverPort = 9337;
+var serverPort = process.env.PORT || 3000;
 var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
@@ -23,18 +23,11 @@ var gateway = braintree.connect({
 //set up database
 mongoose.connect('mongodb://ouyangwanbin:abc123@ds033106.mlab.com:33106/go2fish');
 
-
 var mailServer = {
-    "smtp": "smtp.mail.yahoo.com",
-    "userName": "wanbinouyang@yahoo.com",
-    "password": "eU5eY7hP123"
+    "smtp": "smtp.gmail.com",
+    "userName": "go2fish2016@gmail.com",
+    "password": "abc123!@#"
 }
-
-// var mailServer = {
-//     "smtp": "smtp.gmail.com",
-//     "userName": "go2fish2016@gmail.com",
-//     "password": "abc123!@#"
-// }
 
 function makeString(num) {
     var text = "";
